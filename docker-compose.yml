@@ -13,7 +13,21 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
       - ./seeder.sql:/docker-entrypoint-initdb.d/02-seeder.sql:ro
 
-  lang:
+  julia:
+    image: julia:1.11
+    container_name: legacy_julia
+    volumes:
+      - ./legacy.jl:/app/legacy.jl
+    working_dir: /app
+    command: julia legacy.jl
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: legacy_payments
+      DB_USER: legacy_user
+      DB_PASSWORD: legacy_password
 
 volumes:
   postgres_data:
